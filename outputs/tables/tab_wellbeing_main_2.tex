@@ -1,0 +1,54 @@
+%% Tab: Wellbeing Heterogeneity by Baseline WTP — TOT (IV) specification
+%% Standalone table — \input this file into a document that loads:
+%%   booktabs, tabu, setspace, caption
+
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+
+\begin{table}[htbp]
+\centering
+\caption*{Table 2\textemdash Heterogeneous TOT effects of grid connection,
+  by baseline willingness-to-pay}
+\vspace{-0.5em}
+\begin{tabu} to \linewidth {X[20,l] X[5,c] X[5,c] X[5,c] X[5,c] X[4,c]}
+\toprule
+ & Control & Low-WTP & High-WTP & TOT\,$\times$ & \\[-0.25em]
+ & [SD] & TOT & TOT & HighWTP & $N$ \\[-0.25em]
+ & (1) & (2) & (3) & (4) & (5) \\
+\midrule \\[-1.2em]
+
+%% ── Panel A ──────────────────────────────────────────────────────────────
+\multicolumn{6}{l}{\emph{Panel A: Appliance Outcomes}} \\[0.5em]
+
+\hspace{2.5mm} A1. Number of appliances owned
+  & 1.832 & $0.211$\sym{*} & $0.479$\sym{**} & $0.268$ & 2217 \\
+& [1.340] & $(0.111)$ & $(0.207)$ & $(0.197)$ & \\[0.8em]
+
+%% ── Panel B ──────────────────────────────────────────────────────────────
+\multicolumn{6}{l}{\emph{Panel B: Wellbeing Outcomes}} \\[0.5em]
+
+\hspace{2.5mm} B1. Normalised life satisfaction
+  & -0.000 & $0.132$ & $0.144$ & $0.012$ & 2217 \\
+& [1.000] & $(0.098)$ & $(0.106)$ & $(0.160)$ & \\[0.8em]
+
+\bottomrule
+\end{tabu}
+
+\begin{minipage}{\linewidth}
+\footnotesize
+\setlength{\parskip}{2pt}
+\textit{Notes}: Column~(1) reports the control-group mean with the standard
+deviation in brackets. Columns~(2) and~(3) report TOT coefficients estimated
+by IV2SLS. Instruments: \texttt{treat\_low}, \texttt{treat\_med},
+\texttt{treat\_full} and their interactions with \texttt{HighWTP}.
+Column~(2) is $\hat{b}_1$ (low-WTP TOT) and column~(3) is
+$\hat{b}_1 + \hat{b}_3$ (high-WTP TOT); standard errors computed by the
+delta method. Column~(4) reports $\hat{b}_3$ (differential effect) with its
+standard error in parentheses. Sample: adults not pre-connected at baseline
+(R1, 2016). \text{HighWTP} $= 1$ if stated WTP $>$ sample median ($43.6\,\%$
+of sample). Controls: county, market proximity, transformer timing, baseline
+connection rate, population, gender, age, housing quality, baseline energy
+spending. Standard errors clustered at community level (\texttt{siteno}).
+Asterisks indicate significance (two-tailed):
+$^{*}p<0.10$;\;$^{**}p<0.05$;\;$^{***}p<0.01$.
+\end{minipage}
+\end{table}
