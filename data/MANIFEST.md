@@ -111,3 +111,43 @@
 | 4 | **`impacts_2.dta` unused in JEP package** | The R2 dataset exists in `data/jpe/data/stata/` but is not called by any do-file in `data/jep/`; R2 appliance estimates are only in JPE outputs |
 | 5 | **No baseline appliance ownership stratification file** | Heterogeneity by pre-existing appliance ownership (e.g., already owned a radio) is not pre-computed; would need to be constructed from `demand.dta` |
 | 6 | **All documentation files are empty** | `CONTEXT.md`, `EXTENSION_NOTE.md`, `REPLICATION_NOTE.md`, `VARIABLES.md` are all 0 bytes |
+
+---
+
+## 5. Willingness-to-Pay Heterogeneity — What Exists and What is Missing
+
+### WTP Variables (in `demand.dta`)
+
+| Variable | Description |
+|---|---|
+| `WTP_amt` | Randomly assigned CV price (0, 10k, 15k, 20k, 25k, 35k, 75k KES) |
+| `WTP_r1` | Response to CV question 1: "Would you pay XX KES for a connection?" |
+| `WTP_r2` | Response to CV question 2: same offer with 6-week payment window |
+| `fin_WTP_r1`, `fin_WTP_r2` | WTP responses under financing option |
+| `fin_npv_15`, `fin_npv_25` | NPV of financing at 15% and 25% discount rates |
+| `price` | Actual experimental connection price (KES) |
+| `takeup` | Binary: took up connection |
+
+### Heterogeneity Dimensions Already Explored
+
+| Dimension | Variable | Location | Method |
+|---|---|---|---|
+| **Baseline income** | `earn` (monthly earnings), quartile split | `jpe/code/1_figures.do` lines 108–150 | Separate demand curves (Figure 2B): lower vs. upper earnings quartile |
+| **Housing quality** | `wall` (high-quality walls) | `jpe/code/1_figures.do` lines 152–187 | Separate demand curves (Figure 2C): low vs. high quality |
+| **Socioeconomic status** | `highses` (composite index: education, employment, bank account, earnings, assets) | `jep/tab_A3_A4/tab_A3_A4.do` lines 94–209 | IV regression with `connected × highses` interaction; Appendix Tables A3–A4 |
+| **Adopter type** | Low-price vs. high-price adopters | `jep/tab_A1_A2/tab_A1_A2.do` | LATE by adopter group; Appendix Tables A1–A2 |
+| **Community characteristics** | `busia`, `market`, `funded`, `electrification`, `population` | `jpe/code/5_appendix_tables.do` lines 558–664 | Interaction terms; Table B4 |
+| **Household characteristics** | `hhsize`, `age`, `senior`, `notfarmer`, `bank` | `jpe/code/5_appendix_tables.do` lines 668–796 | Interaction terms; Table B4 |
+| **Elicitation method** | CV vs. revealed preference vs. financing | `jpe/code/1_figures.do` lines 440–611 | Comparison of `cv1`, `cv2`, `rp`, `fin_npv_15/25`; Figure 3C |
+
+### Gaps — WTP Heterogeneity Not Yet Explored
+
+| # | Gap | Notes |
+|---|---|---|
+| 1 | **No WTP heterogeneity by appliance ownership** | Households that already own a TV, radio, or iron may have higher WTP; not tested |
+| 2 | **No WTP heterogeneity by gender** | `female` used only as a control, never as a heterogeneity dimension in demand analysis |
+| 3 | **No R2 WTP follow-up** | WTP is measured only at baseline (demand.dta); no elicitation in R1/R2 surveys to track WTP evolution post-connection |
+| 4 | **Income split is binary (quartiles 1 vs. 4)** | Figure 2B drops middle quartiles; no continuous income-WTP relationship estimated |
+| 5 | **No distance-to-grid WTP gradient** | `distance` appears as a control but no demand curve by distance band |
+| 6 | **No WTP heterogeneity by time preferences** | Financing NPV analysis uses aggregate; no individual-level discount rate × WTP interaction |
+| 7 | **SES index weights are implicit** | `highses` is a PCA/equal-weight composite; sensitivity to index weighting not shown |
