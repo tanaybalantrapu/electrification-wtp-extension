@@ -1,0 +1,374 @@
+\documentclass[letter,12pt]{article}
+
+% --- Packages (matching original JPE/JEP style) ---
+\usepackage{amsfonts, amssymb, amsmath, bbold}
+\usepackage{booktabs, dcolumn, multirow, array, tabularx, tabu, threeparttable}
+\usepackage{float, pdflscape, geometry, setspace}
+\usepackage{mathpazo}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{caption, subcaption}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{natbib}
+
+\geometry{left=1.25in, right=1.25in, top=1.25in, bottom=1.25in}
+\doublespacing
+
+\renewcommand{\arraystretch}{1.3}
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+
+% Extra row separation for tabu
+\extrarowsep=0.1pt
+
+% Significance star macro
+\newcommand{\starnote}{
+  \noindent\emph{Notes}: Asterisks indicate statistical significance (2-tailed):
+  * $P < 0.10$; ** $P < 0.05$; *** $P < 0.01$.
+  Robust standard errors clustered at the community level in parentheses.
+}
+
+\hypersetup{colorlinks=true, linkcolor=black, citecolor=black, urlcolor=black}
+
+\pagenumbering{arabic}
+
+% ------------------------------------------------------------------
+\begin{document}
+
+% ------------------------------------------------------------------
+%  TITLE
+% ------------------------------------------------------------------
+\begin{titlepage}
+\begin{center}
+\vspace*{2cm}
+{\Large \textbf{Do Expectations Shape Wellbeing Gains from Electrification?\\
+Willingness-to-Pay Heterogeneity and Life Satisfaction\\
+in Rural Kenya}}\\[2em]
+{\large Extension of Lee, Miguel \& Wolfram (JPE 2019; JEP 2019)}\\[2em]
+{\normalsize \today}\\[6em]
+
+\begin{abstract}
+\noindent
+This paper asks whether baseline willingness-to-pay (WTP) for a grid electricity
+connection predicts the life satisfaction gains from electrification. Using data
+from a randomised experiment in rural Kenya, we merge stated WTP elicited at
+baseline (2014) with subjective wellbeing outcomes measured at two follow-up
+rounds (2016, 2017). We estimate heterogeneous treatment-on-treated (TOT)
+effects on a life satisfaction index and a mental health symptoms index,
+using the three experimental subsidy arms as instruments and WTP as the
+interaction variable, mirroring the specification of Lee, Miguel \& Wolfram
+(2019). We also examine whether, conditional on connecting, realised life
+satisfaction scales with stated WTP. Our findings speak to the role of
+prior expectations in shaping welfare responses to household electrification.
+\end{abstract}
+\end{center}
+\end{titlepage}
+
+% ------------------------------------------------------------------
+%  1. INTRODUCTION
+% ------------------------------------------------------------------
+\section{Introduction}
+
+A large literature on rural electrification has documented modest average
+impacts on household welfare. Lee, Miguel \& Wolfram (2019) find small or
+null average treatment effects on life satisfaction in a randomised experiment
+in Kenya, even as connection rates respond strongly to price subsidies. One
+explanation is that mean effects mask substantial heterogeneity: households
+with higher prior expectations of benefit may experience larger wellbeing
+gains, while those who connected despite low willingness-to-pay may see
+little change.
+
+We test this mechanism directly. At baseline, each sampled household was
+presented with a randomly assigned hypothetical connection price and asked
+whether they would accept. This contingent valuation elicitation provides a
+measure of stated WTP that varies across households. We link this to
+subjective wellbeing outcomes at two follow-up rounds to ask: do households
+with higher baseline WTP experience larger life satisfaction gains from
+electrification?
+
+We estimate two complementary analyses:
+
+\begin{enumerate}
+  \item \textbf{Heterogeneous TOT by baseline WTP.} We instrument household
+    grid connection with the three experimental treatment arms and their
+    interactions with a high-WTP indicator, following the specification of
+    Lee, Miguel \& Wolfram (2019, Appendix Tables A3--A4).
+
+  \item \textbf{WTP as a predictor of life satisfaction conditional on
+    connecting.} Among connected households, we regress life satisfaction
+    on stated WTP (in USD), controlling for the same household and community
+    covariates.
+\end{enumerate}
+
+% ------------------------------------------------------------------
+%  2. DATA AND IDENTIFICATION
+% ------------------------------------------------------------------
+\section{Data and Identification}
+
+\subsection{Data}
+
+We use three datasets from Lee, Miguel \& Wolfram (2019):
+
+\begin{itemize}
+  \item \texttt{demand.dta} --- 2014 baseline household survey with WTP
+    elicitation and treatment assignment.
+  \item \texttt{impacts\_1.dta} --- 2016 Round 1 (R1) follow-up survey with
+    life satisfaction and mental health outcomes.
+  \item \texttt{impacts\_2.dta} --- 2017 Round 2 (R2) follow-up survey with
+    the same outcomes.
+\end{itemize}
+
+The three datasets share a unique household identifier (\texttt{reppid}),
+enabling a 1:1 merge of baseline WTP with follow-up wellbeing outcomes.
+We exclude households already connected at baseline
+(\texttt{base\_connected}~$=$~1).
+
+\subsection{WTP Measure}
+
+Each household was randomly assigned a contingent valuation price
+(\texttt{WTP\_amt} $\in \{0, 10\text{k}, 15\text{k}, 20\text{k}, 25\text{k},
+35\text{k}, 75\text{k}\}$ KES) and asked whether they would accept. We
+define:
+
+\begin{equation}
+  \texttt{wtp\_stated}_i =
+    \texttt{WTP\_amt}_i \times \mathbf{1}[\texttt{WTP\_r1}_i = 1]
+\end{equation}
+
+and \texttt{wtp\_high}$_i = 1$ if \texttt{wtp\_stated}$_i$ exceeds the
+sample median. Because \texttt{WTP\_amt} is randomly assigned, stated WTP
+has an exogenous component that is uncorrelated with unobservables.
+
+\subsection{Outcomes}
+
+Primary outcome: \texttt{life\_index} (normalised life satisfaction index).
+Secondary outcome: \texttt{symptoms\_index} (mental health symptoms index,
+higher values indicate worse symptoms). Both are available in R1 and R2.
+
+\subsection{Identification}
+
+\paragraph{Analysis 1 --- Heterogeneous TOT.}
+We estimate:
+\begin{equation}
+  Y_{ic} = \alpha + \beta_1 \widehat{D}_{ic} + \beta_2 (\widehat{D}_{ic}
+    \times \text{WTP-High}_{i}) + \gamma \, \text{WTP-High}_{i}
+    + \delta' \mathbf{X}_{ic} + \varepsilon_{ic}
+\end{equation}
+where $D_{ic}$ is an indicator for grid connection, instrumented by
+\texttt{treat\_low}, \texttt{treat\_med}, \texttt{treat\_full} and their
+interactions with \texttt{wtp\_high}. Standard errors are clustered at the
+community level. $\beta_1$ is the TOT for low-WTP households;
+$\beta_1 + \beta_2$ is the TOT for high-WTP households.
+
+\paragraph{Analysis 2 --- Conditional OLS.}
+Among connected households at R1 follow-up we estimate:
+\begin{equation}
+  Y_{ic} = \alpha + \beta \, \text{WTP-Stated}_{i} (\text{USD})
+    + \delta' \mathbf{X}_{ic} + \varepsilon_{ic}
+\end{equation}
+This is descriptive: $\beta$ captures whether ex-ante WTP predicts
+ex-post life satisfaction among those who connected, consistent with an
+expectations channel but not cleanly causal due to selection into connection.
+
+% ------------------------------------------------------------------
+%  3. FIGURES
+% ------------------------------------------------------------------
+\section{Demand Curves and WTP Heterogeneity at Baseline}
+
+Figure~\ref{fig:demand_income} reproduces the experimental demand curves
+from Lee, Miguel \& Wolfram (2019), splitting the sample by baseline income
+quartile (panel A) and housing quality (panel B). High-income and high-quality
+households reveal higher WTP through greater take-up at any given price ---
+the same households we expect to benefit more from connection if expectations
+drive wellbeing gains.
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[t]{0.47\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{../../data/jpe/figures/figure2b.png}
+    \caption{Demand curve by baseline income (bottom vs.\ top earnings quartile)}
+    \label{fig:demand_income_a}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.47\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{../../data/jpe/figures/figure2c.png}
+    \caption{Demand curve by housing quality (low vs.\ high wall quality)}
+    \label{fig:demand_income_b}
+  \end{subfigure}
+  \caption{\textbf{Demand for grid connection by baseline household
+    characteristics.}
+    Solid lines show take-up rates for the high group; dashed lines for
+    the low group. Price on the horizontal axis is in USD. Each point is
+    the share of households that took up the connection at the assigned
+    experimental price. Source: Lee, Miguel \& Wolfram (2019, Figure 2).}
+  \label{fig:demand_income}
+\end{figure}
+
+% ------------------------------------------------------------------
+%  4. RESULTS
+% ------------------------------------------------------------------
+\section{Results}
+
+\subsection{Heterogeneous Treatment Effects on Wellbeing by Baseline WTP}
+
+Tables~\ref{tab:wtp_r1} and~\ref{tab:wtp_r2} report IV estimates of the
+treatment effect on life satisfaction and mental health, split by high vs.\
+low baseline WTP, for R1 (2016) and R2 (2017) respectively.
+
+The coefficient on \texttt{connected} gives the TOT for low-WTP households.
+The coefficient on \texttt{connected}~$\times$~\texttt{wtp\_high} gives the
+\emph{differential} TOT for high-WTP households relative to low-WTP
+households. A positive and significant differential would indicate that
+high-WTP households benefit more from electrification in terms of life
+satisfaction, consistent with an expectations channel.
+
+\clearpage
+\newgeometry{left=1in, right=1in, top=1in, bottom=1in}
+
+\begin{table}[H]
+  \centering
+  \caption{\textbf{Heterogeneous TOT on Wellbeing by Baseline WTP --- R1 (2016)}}
+  \label{tab:wtp_r1}
+  \vspace{0.5em}
+  \input{../tables/tab_wtp_r1.tex}
+  \vspace{0.5em}
+  \begin{minipage}{\linewidth}
+    \small
+    \emph{Notes}: IV-2SLS estimates. Dependent variables are
+    \texttt{life\_index} (column 1) and \texttt{symptoms\_index} (column 2).
+    \texttt{Connected} is instrumented by \texttt{treat\_low},
+    \texttt{treat\_med}, \texttt{treat\_full} and their interactions with
+    \texttt{wtp\_high}. \texttt{wtp\_high} is an indicator for stated WTP
+    above the sample median. Controls include community-level covariates
+    (county, market proximity, transformer timing, baseline connection rate,
+    population) and household covariates (gender, age, housing quality,
+    baseline energy spending). Sample restricted to adult household members
+    (\texttt{child}~$=$~0) not connected at baseline.
+    \starnote
+  \end{minipage}
+\end{table}
+
+\clearpage
+
+\begin{table}[H]
+  \centering
+  \caption{\textbf{Heterogeneous TOT on Wellbeing by Baseline WTP --- R2 (2017)}}
+  \label{tab:wtp_r2}
+  \vspace{0.5em}
+  \input{../tables/tab_wtp_r2.tex}
+  \vspace{0.5em}
+  \begin{minipage}{\linewidth}
+    \small
+    \emph{Notes}: As Table~\ref{tab:wtp_r1} but using R2 (2017) follow-up data.
+    \starnote
+  \end{minipage}
+\end{table}
+
+\restoregeometry
+
+\subsection{WTP as a Predictor of Life Satisfaction Conditional on Connecting}
+
+Table~\ref{tab:wtp_connected} presents OLS estimates of the relationship
+between stated WTP (in USD, 2014 prices) and life satisfaction, restricted
+to households connected at the R1 follow-up.
+
+\clearpage
+\newgeometry{left=1in, right=1in, top=1in, bottom=1in}
+
+\begin{table}[H]
+  \centering
+  \caption{\textbf{WTP as Predictor of Wellbeing Conditional on Connection --- R1 (2016)}}
+  \label{tab:wtp_connected}
+  \vspace{0.5em}
+  \input{../tables/tab_wtp_connected.tex}
+  \vspace{0.5em}
+  \begin{minipage}{\linewidth}
+    \small
+    \emph{Notes}: OLS estimates. Sample restricted to households connected to
+    the grid at R1 (\texttt{connected}~$=$~1). \texttt{wtp\_stated\_usd} is
+    the stated WTP from the 2014 contingent valuation, converted to USD at
+    the 2014 average exchange rate (87.94 KES/USD). Controls are as in
+    Table~\ref{tab:wtp_r1}. This regression is descriptive: $\beta$ captures
+    whether ex-ante WTP predicts ex-post life satisfaction among connectors,
+    but is not a clean causal estimate due to selection into connection.
+    \starnote
+  \end{minipage}
+\end{table}
+
+\restoregeometry
+
+\subsection{Robustness}
+
+Table~\ref{tab:robustness} presents three robustness checks using R1 data:
+(i) replacing \texttt{wtp\_high} with a binary indicator for any positive WTP
+under the 6-week financing window (\texttt{wtp\_r2\_any}), (ii) using
+\texttt{wtp\_any} (willing to pay anything at all), and (iii) including both
+\texttt{wtp\_high} and the SES composite index (\texttt{highses}) from
+Lee, Miguel \& Wolfram (2019) to test whether WTP heterogeneity simply
+reflects socioeconomic status.
+
+\clearpage
+\newgeometry{left=1in, right=1in, top=1in, bottom=1in}
+
+\begin{table}[H]
+  \centering
+  \caption{\textbf{Robustness: Alternative WTP Measures and SES Control --- R1 (2016)}}
+  \label{tab:robustness}
+  \vspace{0.5em}
+  \input{../tables/tab_wtp_robustness.tex}
+  \vspace{0.5em}
+  \begin{minipage}{\linewidth}
+    \small
+    \emph{Notes}: Dependent variable is \texttt{life\_index} throughout.
+    Column (1) uses \texttt{wtp\_r2\_any} (binary WTP under 6-week financing,
+    \texttt{WTP\_r2}). Column (2) uses \texttt{wtp\_any} (any positive stated WTP
+    from \texttt{WTP\_r1}). Column (3) includes both \texttt{wtp\_high} and
+    \texttt{highses} (SES composite index above 75th percentile, constructed
+    as in Lee, Miguel \& Wolfram 2019) to test whether WTP captures SES
+    rather than expectations. All specifications are IV-2SLS with community-
+    clustered standard errors. Sample as in Table~\ref{tab:wtp_r1}.
+    \starnote
+  \end{minipage}
+\end{table}
+
+\restoregeometry
+
+% ------------------------------------------------------------------
+%  5. CONCLUSION
+% ------------------------------------------------------------------
+\section{Conclusion}
+
+We examine whether willingness-to-pay for grid electricity at baseline
+predicts life satisfaction gains at follow-up in a randomised experiment in
+rural Kenya. By substituting the baseline WTP indicator for the SES composite
+used in Lee, Miguel \& Wolfram (2019), we test an expectations channel:
+households that valued the connection more ex-ante may also benefit more
+ex-post.
+
+Our findings [to be reported upon running the Stata code] shed light on
+whether the well-documented null average effects on wellbeing conceal
+heterogeneity along the dimension of prior expectations.
+
+% ------------------------------------------------------------------
+%  REFERENCES
+% ------------------------------------------------------------------
+\clearpage
+\begin{singlespace}
+\bibliographystyle{aer}
+\begin{thebibliography}{9}
+
+\bibitem{lee2019jpe}
+Lee, Kenneth, Edward Miguel, and Catherine Wolfram. 2019.
+``Experimental Evidence on the Economics of Rural Electrification.''
+\textit{Journal of Political Economy} 128 (4): 1523--1565.
+
+\bibitem{lee2019jep}
+Lee, Kenneth, Edward Miguel, and Catherine Wolfram. 2020.
+``Does Household Electrification Supercharge Economic Development?''
+\textit{Journal of Economic Perspectives} 34 (1): 122--144.
+
+\end{thebibliography}
+\end{singlespace}
+
+\end{document}
