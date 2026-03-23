@@ -206,8 +206,8 @@ point estimates of $b_3$ range from $-0.071$ (R2, D2) to $+0.032$
 \centering
 \caption*{Table~1\textemdash Heterogeneous effects of grid connection
   on wellbeing, by baseline willingness-to-pay}
+\label{tab:main}
 \vspace{-0.5em}
-\begin{threeparttable}
 \begin{tabu} to \linewidth {X[20,l] X[5,c] X[5,c] X[5,c] X[5,c] X[4,c]}
 \toprule
  & Control & Low-WTP & High-WTP & Treat\,$\times$ & FDR \\[-0.25em]
@@ -221,56 +221,48 @@ point estimates of $b_3$ range from $-0.071$ (R2, D2) to $+0.032$
   & $0.000$ & $0.094$\sym{**} & $0.076$ & $-0.018$ & $0.950$ \\
 & $[1.000]$ & $(0.046)$ & $(0.050)$ & $(0.066)$ & \\[0.8em]
 
-\hspace{2.5mm} D6. Perceptions of security
-  index\tnote{$\dagger$}
+\hspace{2.5mm} D6. Perceptions of security index$^\dagger$
   & $0.000$ & $-0.048$ & $-0.060$ & $-0.012$ & $0.950$ \\
 & $[1.000]$ & $(0.059)$ & $(0.073)$ & $(0.089)$ & \\[0.8em]
 
 \multicolumn{6}{l}{\emph{Panel E: Mean Treatment Effects on Grouped Outcomes}} \\[0.5em]
 
-\hspace{2.5mm} E1. Noneconomic index
-  (D2\,+\,D6)\tnote{$\ddagger$}
+\hspace{2.5mm} E1. Noneconomic index (D2\,+\,D6)$^\ddagger$
   & $0.000$ & $0.038$ & $-0.009$ & $-0.047$ & {---} \\
 & $[0.700]$ & $(0.047)$ & $(0.052)$ & $(0.067)$ & \\
 
 \bottomrule
 \end{tabu}
-
-\begin{tablenotes}[flushleft]
+\vspace{0.4em}
+\begin{minipage}{\linewidth}
 \footnotesize
-\setlength{\itemsep}{2pt}
-\item \textit{Notes}: Column~(1) reports the control-group mean with the
-  standard deviation in brackets. Columns~(2) and~(3) report ITT
-  coefficients from the interaction regression
-  $y_{ic} = \alpha + b_1\,\text{Treat}_{ic}
-  + b_2\,\text{HighWTP}_{i}
-  + b_3\,(\text{Treat}\times\text{HighWTP})_{ic}
-  + \boldsymbol{\delta}'\mathbf{X}_{ic} + \varepsilon_{ic}$,
-  where column~(2) is $\hat{b}_1$ (low-WTP ITT) and column~(3) is
-  $\hat{b}_1+\hat{b}_3$ (high-WTP ITT, SE by delta method).
-  Column~(4) is $\hat{b}_3$; column~(5) is the Benjamini--Hochberg
-  FDR-adjusted $q$-value for column~(4).
-  Treat $=$ \texttt{treated\_all} (any subsidy arm).
-  HighWTP $= 1$ if stated WTP above sample median (43.6\,\% of
-  sample); stated WTP $=$ \texttt{WTP\_amt}$\times$\texttt{WTP\_r1}.
-  D2: pooled R1+R2, $N=4{,}157$.
-  D6, E1: R2 only, $N=2{,}047$--$2{,}057$.
-  Controls: county, market proximity, transformer timing, baseline
-  connection rate, population, gender, age, housing quality, baseline
-  energy spending. Standard errors clustered at the community level
-  (\texttt{siteno}).
-  Asterisks: $^{*}p<0.10$;\;$^{**}p<0.05$;\;$^{***}p<0.01$
-  (two-tailed).
-\item[$\dagger$] D6 is exploratory: it does not survive
-  Benjamini--Hochberg correction ($q=0.950$) and is available
-  in R2 only (\texttt{r\_crime\_index}).
-\item[$\ddagger$] E1 is the mean of the standardised D2 and D6
-  z-scores. FDR $q$-value not reported for Panel~E, following
-  Lee, Miguel \& Wolfram (2019).
-\end{tablenotes}
-\end{threeparttable}
+\textit{Notes}: Column~(1) reports the control-group mean with the
+standard deviation in brackets. Columns~(2) and~(3) report ITT
+coefficients from the interaction regression
+$y_{ic} = \alpha + b_1\,\text{Treat}_{ic}
++ b_2\,\text{HighWTP}_{i}
++ b_3\,(\text{Treat}\times\text{HighWTP})_{ic}
++ \boldsymbol{\delta}'\mathbf{X}_{ic} + \varepsilon_{ic}$,
+where column~(2) is $\hat{b}_1$ (low-WTP ITT) and column~(3) is
+$\hat{b}_1+\hat{b}_3$ (high-WTP ITT, SE by delta method).
+Column~(4) is $\hat{b}_3$; column~(5) is the Benjamini--Hochberg
+FDR-adjusted $q$-value for column~(4).
+Treat $=$ \texttt{treated\_all} (any subsidy arm).
+HighWTP $= 1$ if stated WTP above sample median (43.6\,\% of sample);
+stated WTP $=$ \texttt{WTP\_amt}$\times$\texttt{WTP\_r1}.
+D2: pooled R1+R2, $N=4{,}157$. D6, E1: R2 only,
+$N=2{,}047$--$2{,}057$.
+Controls: county, market proximity, transformer timing, baseline
+connection rate, population, gender, age, housing quality, baseline
+energy spending. Standard errors clustered at the community level.
+Asterisks: $^{*}p<0.10$;\;$^{**}p<0.05$;\;$^{***}p<0.01$ (two-tailed).\\[2pt]
+$^\dagger$ D6 is exploratory: does not survive Benjamini--Hochberg
+correction ($q=0.950$); R2 only (\texttt{r\_crime\_index}).\\[2pt]
+$^\ddagger$ E1 is the mean of standardised D2 and D6 z-scores.
+FDR $q$-value not reported for Panel~E following Lee, Miguel \&
+Wolfram (2019).
+\end{minipage}
 \end{table}
-\label{tab:main}
 % ─────────────────────────────────────────────────────────────────────────────
 
 \end{singlespace}
