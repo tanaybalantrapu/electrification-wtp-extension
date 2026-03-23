@@ -1,0 +1,342 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\doublespacing
+
+%% Bibliography
+\usepackage{natbib}
+
+%% Tables
+\usepackage{booktabs, threeparttable, siunitx, caption}
+\usepackage{tabu}
+\usepackage{float}
+\extrarowsep=0.1pt
+\renewcommand{\arraystretch}{1.15}
+
+%% Figures
+\usepackage{graphicx}
+
+%% Math & fonts
+\usepackage{amsmath, amssymb}
+\usepackage{mathpazo}
+
+%% Cross-references
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=black, citecolor=black, urlcolor=black}
+
+%% Misc
+\usepackage[dvipsnames]{xcolor}
+\usepackage{microtype}
+
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\begin{document}
+
+% ── Title page ───────────────────────────────────────────────────────────────
+\begin{titlepage}
+\begin{center}
+\vspace*{1.5cm}
+{\large \textbf{Does Baseline Willingness-to-Pay Predict\\[0.3em]
+Life Satisfaction Gains from Electrification?\\[0.3em]
+Evidence from Rural Kenya}}\\[2em]
+{\normalsize Extension of Lee, Miguel \& Wolfram (JPE 2019)}\\[1.5em]
+{\normalsize \today}
+\end{center}
+
+\vspace{2em}
+\begin{abstract}
+\noindent
+We ask whether a household's stated willingness-to-pay (WTP) for a grid
+electricity connection at baseline predicts the life satisfaction gains it
+realises from connection. Using data from the randomised experiment of
+Lee, Miguel \& Wolfram (2019), we merge a contingent-valuation WTP measure
+from the 2014 baseline survey with subjective wellbeing outcomes from two
+follow-up rounds (2016, 2017). We estimate heterogeneous intent-to-treat
+(ITT) effects on a normalised life satisfaction index and a
+perceptions-of-security index, interacting the treatment indicator with a
+binary high-WTP variable. The differential ITT coefficient is small
+(${-}0.018$ standard deviations) and statistically insignificant in all
+specifications. After Benjamini--Hochberg correction, neither outcome
+survives multiple-testing adjustment ($q \geq 0.95$). These results are
+consistent with the null average wellbeing effects reported by the original
+paper and suggest that prior expectations, as proxied by stated WTP, do not
+meaningfully moderate the wellbeing impact of grid connection.
+\end{abstract}
+\end{titlepage}
+
+% ── 1. Background and Motivation ─────────────────────────────────────────────
+\section{Background and Motivation}
+\label{sec:background}
+
+A growing literature examines the welfare effects of household
+electrification in developing countries. Lee, Miguel \& Wolfram (2019)
+conduct a randomised experiment in rural Kenya in which households are
+randomly offered grid connections at varying subsidy levels. Despite large
+take-up responses to price subsidies, the authors find small or null
+average effects on income, employment, and subjective wellbeing.
+
+One mechanism that could generate heterogeneous wellbeing effects even
+within an experiment with null average effects is an \emph{expectations
+channel}: households that valued the connection more highly ex ante---as
+revealed by higher stated WTP---may have had stronger prior expectations
+of benefit. If electrification meets those expectations, high-WTP
+households should exhibit larger life satisfaction gains than low-WTP
+households; if it fails to meet them, the reverse could hold.
+
+This note tests the expectations channel directly by interacting the
+experimental treatment indicator with a baseline WTP measure. The
+specification follows Lee, Miguel \& Wolfram (2019, JEP) Appendix
+Tables A3--A4, which interact grid connection with a high-SES composite
+index. We substitute the SES index with a binary high-WTP indicator
+derived from the contingent-valuation exercise conducted at baseline.
+
+% ── 2. Data and Specification ────────────────────────────────────────────────
+\section{Data and Specification}
+\label{sec:data}
+
+\subsection*{Data}
+
+We use three datasets from Lee, Miguel \& Wolfram (2019). The baseline
+survey (\texttt{demand.dta}, 2014) contains the WTP elicitation and
+treatment assignment. Two follow-up surveys---Round~1
+(\texttt{impacts\_1.dta}, 2016) and Round~2 (\texttt{impacts\_2.dta},
+2017)---contain the outcome variables. All three share a unique household
+identifier (\texttt{reppid}), enabling a 1:1 merge. We drop households
+already connected at baseline (\texttt{base\_connected}$=1$) and restrict
+to adult respondents (\texttt{child}$=0$), following the original papers.
+
+\subsection*{WTP Measure}
+
+At baseline, each household was randomly assigned a hypothetical connection
+price (\texttt{WTP\_amt} $\in \{0,\,10{,}000,\,\ldots,\,75{,}000\}$~KES)
+and asked whether it would accept (\texttt{WTP\_r1}$\in\{0,1\}$). We
+define stated WTP as:
+\begin{equation}
+\label{eq:wtp}
+\text{WTP-stated}_i \;=\; \texttt{WTP\_amt}_i
+  \;\times\; \mathbf{1}[\texttt{WTP\_r1}_i = 1].
+\end{equation}
+Since the elicitation price is randomly assigned, stated WTP has an
+exogenous component. The sample median of WTP-stated equals zero (56.4\,\%
+of households declined the offer), so
+$\texttt{wtp\_high}_i = 1$ effectively identifies the 43.6\,\% of
+households that accepted at any positive price.
+
+\subsection*{Outcomes}
+
+Our primary outcome is \texttt{life\_index}, a normalised life satisfaction
+index available in both R1 and R2. Our secondary---and exploratory---outcome
+is \texttt{r\_crime\_index}, the perceptions-of-security index (JPE
+Table~3, row~D6), available in R2 only. Both indices are standardised to
+mean zero and unit standard deviation in the control group.
+
+\subsection*{Specification}
+
+We estimate:
+\begin{equation}
+\label{eq:spec}
+y_{ic} \;=\; \alpha
+  \;+\; b_1\,\text{Treat}_{ic}
+  \;+\; b_2\,\text{HighWTP}_{i}
+  \;+\; b_3\,(\text{Treat}_{ic} \times \text{HighWTP}_{i})
+  \;+\; \boldsymbol{\delta}'\mathbf{X}_{ic}
+  \;+\; \varepsilon_{ic},
+\end{equation}
+where $\text{Treat}_{ic}=\texttt{treated\_all}$ (any subsidy arm),
+$\text{HighWTP}_i = \mathbf{1}[\text{WTP-stated}_i > \text{median}]$,
+and $\mathbf{X}_{ic}$ includes community controls (county, market
+proximity, transformer timing, baseline connection rate, population) and
+household controls (gender, age, housing quality, baseline energy
+spending). For the pooled D2 specification we include a Round~2 fixed
+effect. Column~(2) of Table~\ref{tab:main} reports $\hat{b}_1$ (the
+ITT for low-WTP households); column~(3) reports $\hat{b}_1+\hat{b}_3$
+(the ITT for high-WTP households); column~(4) reports $\hat{b}_3$ (the
+differential). Standard errors are clustered at the community level
+(\texttt{siteno}). We apply the Benjamini--Hochberg (1995) procedure to
+adjust for multiple testing.
+
+% ── 3. Results ───────────────────────────────────────────────────────────────
+\section{Results}
+\label{sec:results}
+
+Figure~\ref{fig:coefplot} plots the ITT coefficients for low-WTP (hollow
+circles) and high-WTP (filled circles) households, with 95\,\% confidence
+intervals. For both D2 (life satisfaction) and D6 (security index, R2
+only), the two groups' estimates are close together and straddle zero with
+overlapping confidence intervals. There is no visual evidence of a positive
+expectations effect.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.92\textwidth]{%
+    ../figures/wellbeing_wtp_heterogeneity.pdf}
+  \caption{ITT coefficients on wellbeing outcomes by baseline WTP group.
+    Hollow circles: low-WTP households (WTP-stated $\leq$ median).
+    Filled circles: high-WTP households (WTP-stated $>$ median).
+    Horizontal bars are 95\,\% confidence intervals. Vertical dashed
+    line at zero. D6 is exploratory (R2 only; does not survive FDR
+    correction). See Section~\ref{sec:data} for specification.}
+  \label{fig:coefplot}
+\end{figure}
+
+Table~\ref{tab:main} presents the full regression results in the format
+of Lee, Miguel \& Wolfram (2019) Table~3. For D2 (Panel~D, row~D2),
+the low-WTP ITT is $0.094^{**}$ ($p=0.042$), consistent with the
+positive average effect in the original paper. The high-WTP ITT is
+$0.076$ ($p=0.127$), and the differential $\hat{b}_3=-0.018$
+(SE$=0.066$, $p=0.787$). After Benjamini--Hochberg correction the FDR
+$q$-value is $0.950$, far from conventional significance thresholds.
+
+For D6 (Panel~D, row~D6), neither group's ITT is significant, and the
+differential is $-0.012$ ($p=0.893$, $q=0.950$). Panel~E reports the
+mean treatment effect on the noneconomic index (average of standardised
+D2 and D6 z-scores): the differential is $-0.047$ ($p=0.486$),
+again insignificant. Across all rounds and with or without controls,
+point estimates of $b_3$ range from $-0.071$ (R2, D2) to $+0.032$
+(R1, D2). The robustness specification using continuous WTP
+(WTP-stated in USD) yields $\hat{b}_3=0.0001$ ($p=0.647$).
+
+\clearpage
+\newgeometry{left=0.9in, right=0.9in, top=1in, bottom=1in}
+\begin{singlespace}
+
+% ── Table 1 (inlined) ────────────────────────────────────────────────────────
+\begin{table}[H]
+\centering
+\caption*{Table~1\textemdash Heterogeneous effects of grid connection
+  on wellbeing, by baseline willingness-to-pay}
+\vspace{-0.5em}
+\begin{threeparttable}
+\begin{tabu} to \linewidth {X[20,l] X[5,c] X[5,c] X[5,c] X[5,c] X[4,c]}
+\toprule
+ & Control & Low-WTP & High-WTP & Treat\,$\times$ & FDR \\[-0.25em]
+ & & ITT & ITT & HighWTP & $q$-value \\[-0.25em]
+ & (1) & (2) & (3) & (4) & (5) \\
+\midrule \\[-1.2em]
+
+\multicolumn{6}{l}{\emph{Panel D: Primary Noneconomic Outcomes}} \\[0.5em]
+
+\hspace{2.5mm} D2. Normalised life satisfaction
+  & $0.000$ & $0.094$\sym{**} & $0.076$ & $-0.018$ & $0.950$ \\
+& $[1.000]$ & $(0.046)$ & $(0.050)$ & $(0.066)$ & \\[0.8em]
+
+\hspace{2.5mm} D6. Perceptions of security
+  index\tnote{$\dagger$}
+  & $0.000$ & $-0.048$ & $-0.060$ & $-0.012$ & $0.950$ \\
+& $[1.000]$ & $(0.059)$ & $(0.073)$ & $(0.089)$ & \\[0.8em]
+
+\multicolumn{6}{l}{\emph{Panel E: Mean Treatment Effects on Grouped Outcomes}} \\[0.5em]
+
+\hspace{2.5mm} E1. Noneconomic index
+  (D2\,+\,D6)\tnote{$\ddagger$}
+  & $0.000$ & $0.038$ & $-0.009$ & $-0.047$ & {---} \\
+& $[0.700]$ & $(0.047)$ & $(0.052)$ & $(0.067)$ & \\
+
+\bottomrule
+\end{tabu}
+
+\begin{tablenotes}[flushleft]
+\footnotesize
+\setlength{\itemsep}{2pt}
+\item \textit{Notes}: Column~(1) reports the control-group mean with the
+  standard deviation in brackets. Columns~(2) and~(3) report ITT
+  coefficients from the interaction regression
+  $y_{ic} = \alpha + b_1\,\text{Treat}_{ic}
+  + b_2\,\text{HighWTP}_{i}
+  + b_3\,(\text{Treat}\times\text{HighWTP})_{ic}
+  + \boldsymbol{\delta}'\mathbf{X}_{ic} + \varepsilon_{ic}$,
+  where column~(2) is $\hat{b}_1$ (low-WTP ITT) and column~(3) is
+  $\hat{b}_1+\hat{b}_3$ (high-WTP ITT, SE by delta method).
+  Column~(4) is $\hat{b}_3$; column~(5) is the Benjamini--Hochberg
+  FDR-adjusted $q$-value for column~(4).
+  Treat $=$ \texttt{treated\_all} (any subsidy arm).
+  HighWTP $= 1$ if stated WTP above sample median (43.6\,\% of
+  sample); stated WTP $=$ \texttt{WTP\_amt}$\times$\texttt{WTP\_r1}.
+  D2: pooled R1+R2, $N=4{,}157$.
+  D6, E1: R2 only, $N=2{,}047$--$2{,}057$.
+  Controls: county, market proximity, transformer timing, baseline
+  connection rate, population, gender, age, housing quality, baseline
+  energy spending. Standard errors clustered at the community level
+  (\texttt{siteno}).
+  Asterisks: $^{*}p<0.10$;\;$^{**}p<0.05$;\;$^{***}p<0.01$
+  (two-tailed).
+\item[$\dagger$] D6 is exploratory: it does not survive
+  Benjamini--Hochberg correction ($q=0.950$) and is available
+  in R2 only (\texttt{r\_crime\_index}).
+\item[$\ddagger$] E1 is the mean of the standardised D2 and D6
+  z-scores. FDR $q$-value not reported for Panel~E, following
+  Lee, Miguel \& Wolfram (2019).
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+\label{tab:main}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\end{singlespace}
+\restoregeometry
+
+Across all three rounds and both with and without controls, the point
+estimates of $b_3$ are small and consistently negative, ranging from
+$-0.071$ (R2, D2, with controls) to $+0.032$ (R1, D2, with controls).
+The robustness specification using a continuous WTP measure (WTP-stated
+in USD) similarly yields an insignificant interaction
+($\hat{b}_3=0.0001$, $p=0.647$).
+
+% ── 4. Caveats ───────────────────────────────────────────────────────────────
+\section{Caveats}
+\label{sec:caveats}
+
+\paragraph{WTP measure is binary and partially random.}
+Because each household sees a single randomly assigned elicitation
+price, we cannot recover a complete demand curve at the individual
+level. The \texttt{wtp\_high} indicator conflates the household's
+underlying valuation with the random price draw: a household assigned
+a high price that accepts may differ systematically from one assigned a
+low price that accepts. The median split on WTP-stated is therefore a
+coarse proxy for true willingness-to-pay.
+
+\paragraph{Null average effects constrain power.}
+The original papers find small average effects on \texttt{life\_index}
+(ITT $\approx 0.09$~SD in our pooled sample). With such small signal,
+detecting heterogeneity of plausible magnitude would require a
+substantially larger sample or stronger variation in WTP.
+
+\paragraph{D6 is exploratory and R2-only.}
+The perceptions-of-security index (\texttt{r\_crime\_index}) is not
+available in R1 and does not survive FDR correction in the original
+paper. Results for D6 should be treated as exploratory only.
+
+\paragraph{Attrition.}
+The \texttt{demand.dta}--\texttt{impacts\_2.dta} merge (2014--2017)
+has not been validated against the original paper's attrition tables.
+The WTP merge rate in the pooled sample is 99.5\,\%, suggesting minimal
+non-response, but differential attrition by WTP group cannot be ruled
+out without a formal balance check.
+
+% ── References ───────────────────────────────────────────────────────────────
+\clearpage
+\begin{singlespace}
+\begin{thebibliography}{9}
+
+\bibitem[Benjamini and Hochberg(1995)]{benjamini1995}
+Benjamini, Yoav, and Yosef Hochberg. 1995.
+``Controlling the False Discovery Rate: A Practical and Powerful
+Approach to Multiple Testing.''
+\textit{Journal of the Royal Statistical Society, Series~B}
+57~(1): 289--300.
+
+\bibitem[Lee, Miguel, and Wolfram(2019)]{lee2019jpe}
+Lee, Kenneth, Edward Miguel, and Catherine Wolfram. 2019.
+``Experimental Evidence on the Economics of Rural Electrification.''
+\textit{Journal of Political Economy} 128~(4): 1523--1565.
+
+\bibitem[Lee, Miguel, and Wolfram(2020)]{lee2019jep}
+Lee, Kenneth, Edward Miguel, and Catherine Wolfram. 2020.
+``Does Household Electrification Supercharge Economic Development?''
+\textit{Journal of Economic Perspectives} 34~(1): 122--144.
+
+\end{thebibliography}
+\end{singlespace}
+
+\end{document}
