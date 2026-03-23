@@ -2,11 +2,19 @@
 data/jep/
 data/jpe/
 # Stata temp files
-*.stswp *.stsem *.log ~*.dta
+*.stswp
+*.stsem
+*.log
+~*.dta
 # LaTeX build artefacts
-outputs/latex/*.aux outputs/latex/*.bbl outputs/latex/*.blg
-outputs/latex/*.fls outputs/latex/*.synctex.gz outputs/latex/*.out
+outputs/latex/*.aux
+outputs/latex/*.bbl
+outputs/latex/*.blg
+outputs/latex/*.fls
+outputs/latex/*.synctex.gz
+outputs/latex/*.out
 # Large derived datasets
 derived/
 # OS files
-.DS_Store Thumbs.db
+.DS_Store
+Thumbs.db
